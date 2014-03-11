@@ -10,5 +10,6 @@ public class App
     {
         System.out.println( "Hello World!" );
         System.out.println( "My first test commit" );
+        System.out.println( "My second test commit" );
     }
 }
