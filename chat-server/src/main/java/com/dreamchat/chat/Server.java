@@ -23,7 +23,7 @@ public class Server {
         try {
             servers = new ServerSocket(1234);
         } catch (IOException e) {
-            System.out.println("Couldn't listen to port 4444");
+            System.out.println("Couldn't listen to port 1234");
             System.exit(-1);
         }
 
