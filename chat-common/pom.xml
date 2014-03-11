@@ -13,4 +13,12 @@
     <version>DREAM-CHAT-SNAPSHOT</version>
     <name>chat-common</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+    </dependencies>
 </project>
