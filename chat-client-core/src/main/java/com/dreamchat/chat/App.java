@@ -9,7 +9,5 @@ public class App
     public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
-        System.out.println( "My first test commit" );
-        System.out.println( "My second test commit" );
     }
 }
