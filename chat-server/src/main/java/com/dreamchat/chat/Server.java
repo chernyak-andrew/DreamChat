@@ -1,9 +1,9 @@
 package com.dreamchat.chat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -12,22 +12,14 @@ import java.net.Socket;
  */
 public class Server {
     public static void main(String[] args) throws IOException {
-        System.out.println("Welcome to Server side");
-        BufferedReader in = null;
-        PrintWriter out = null;
-
+        System.out.println("Welcome!");
+        BufferedReader buffReader = null;
+        PrintWriter printWriter = null;
+        String messageStr;
         ServerSocket servers = null;
         Socket fromclient = null;
-
-        // create server socket
         try {
             servers = new ServerSocket(1234);
-        } catch (IOException e) {
-            System.out.println("Couldn't listen to port 1234");
-            System.exit(-1);
-        }
-
-        try {
             System.out.print("Waiting for a client...");
             fromclient = servers.accept();
             System.out.println("Client connected");
@@ -35,22 +27,24 @@ public class Server {
             System.out.println("Can't accept");
             System.exit(-1);
         }
-
-        in = new BufferedReader(new
+        buffReader = new BufferedReader(new
                 InputStreamReader(fromclient.getInputStream()));
-        out = new PrintWriter(fromclient.getOutputStream(), true);
-        String input, output;
+        printWriter = new PrintWriter(fromclient.getOutputStream(), true);
+        ObjectMapper mapper = new ObjectMapper();
 
-        System.out.println("Wait for messages");
-        while ((input = in.readLine()) != null) {
-            if (input.equalsIgnoreCase("exit")) break;
-            out.println("S ::: " + input);
-            System.out.println(input);
+        Message messageFromClient = null;
+        try {
+            while ((messageStr = buffReader.readLine()) != null) {
+                if (messageStr.equalsIgnoreCase("exit")) break;
+                messageFromClient = mapper.readValue(messageStr, Message.class);
+                System.out.println(messageFromClient.getDateCreated()+":"+ messageFromClient.getSender() +":    "+ messageFromClient.getMessage());
+                printWriter.print(messageStr);
+            }
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex){
+            ex.printStackTrace();
         }
-        out.close();
-        in.close();
-        fromclient.close();
-        servers.close();
     }
 }
 

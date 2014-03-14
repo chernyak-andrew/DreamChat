@@ -19,6 +19,14 @@
             <artifactId>miglayout</artifactId>
             <version>3.5.5</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.dreamchat.chat</groupId>
+            <artifactId>chat-client-core</artifactId>
+            <version>DREAM-CHAT-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 

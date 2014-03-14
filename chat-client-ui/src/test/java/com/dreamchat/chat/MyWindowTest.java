@@ -1,7 +1,7 @@
 package com.dreamchat.chat;
 
 
-public class AppTest
+public class MyWindowTest
 {
 
 }

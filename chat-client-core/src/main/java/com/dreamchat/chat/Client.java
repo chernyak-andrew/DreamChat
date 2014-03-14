@@ -1,15 +1,78 @@
 package com.dreamchat.chat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * @author eugene chapsky
  */
 public class Client {
+
+    private StackTraceElement state; // connected, disconnected,
+    private static String host;
+    private static int port;
+    private static Socket soket = null;
+    BufferedReader bufferedReader = null;
+    PrintWriter printWriter = null;
+    String strMsg;
+    String login;
+
+    public Client(String host, int port, String login) {
+        this.host = host;
+        this.port = port;
+        this.login = login;
+        connect();
+    }
+
+    public Client(){
+        this("localhost", 1234, "Default Login");
+    }
+
+    public void connect() {
+       System.out.println("Connecting to... " + host);
+        try{
+            soket = new Socket(host, port);
+            bufferedReader = new BufferedReader(new InputStreamReader(soket.getInputStream()));
+            printWriter = new PrintWriter(soket.getOutputStream(), true);
+        } catch (UnknownHostException ex){
+            ex.printStackTrace();
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+    }
+
+    public void disconnect() {
+        try {
+            soket.close();
+            bufferedReader.close();
+            printWriter.close();
+        } catch (IOException ex){
+            System.err.print("Cannot close Soket/BufferedReader/PrintWriter");
+        }
+    }
+
+    public void sendMessage(String message) {
+        Message msg = new Message(message, login);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            strMsg = mapper.writeValueAsString(msg);
+            printWriter.println(strMsg);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    public String getLogin(){
+        return login;
+    }
+
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Client side");
 

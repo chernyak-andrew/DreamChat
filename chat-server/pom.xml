@@ -13,4 +13,13 @@
     <version>DREAM-CHAT-SNAPSHOT</version>
     <name>chat-server</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.dreamchat.chat</groupId>
+            <artifactId>chat-common</artifactId>
+            <version>DREAM-CHAT-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
 </project>
