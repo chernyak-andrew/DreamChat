@@ -11,34 +11,32 @@ import java.net.Socket;
  * @author eugene chapsky
  */
 public class Server {
+    private  static int port = 1234;
+
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome!");
-        BufferedReader buffReader = null;
-        PrintWriter printWriter = null;
-        String messageStr;
-        ServerSocket servers = null;
-        Socket fromclient = null;
+        String messageString;
+        ServerSocket serverSoket = null;
+        Socket soket = null;
         try {
-            servers = new ServerSocket(1234);
+            serverSoket = new ServerSocket(port);
             System.out.print("Waiting for a client...");
-            fromclient = servers.accept();
+            soket = serverSoket.accept();
             System.out.println("Client connected");
         } catch (IOException e) {
-            System.out.println("Can't accept");
+            System.out.println("Can't accept server soket");
             System.exit(-1);
         }
-        buffReader = new BufferedReader(new
-                InputStreamReader(fromclient.getInputStream()));
-        printWriter = new PrintWriter(fromclient.getOutputStream(), true);
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(soket.getInputStream()));
+        PrintWriter printWriter = new PrintWriter(soket.getOutputStream(), true);
         ObjectMapper mapper = new ObjectMapper();
-
         Message messageFromClient = null;
         try {
-            while ((messageStr = buffReader.readLine()) != null) {
-                if (messageStr.equalsIgnoreCase("exit")) break;
-                messageFromClient = mapper.readValue(messageStr, Message.class);
+            while ((messageString = buffReader.readLine()) != null) {
+                if (messageString.equalsIgnoreCase("exit")) break;
+                messageFromClient = mapper.readValue(messageString, Message.class);
                 System.out.println(messageFromClient.getDateCreated()+":"+ messageFromClient.getSender() +":    "+ messageFromClient.getMessage());
-                printWriter.print(messageStr);
+                printWriter.print(messageString);
             }
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();

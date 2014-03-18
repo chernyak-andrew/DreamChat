@@ -2,6 +2,7 @@ package com.dreamchat.chat;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,9 +45,6 @@ public class Message {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
 
 
 

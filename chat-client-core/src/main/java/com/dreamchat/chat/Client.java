@@ -16,10 +16,10 @@ public class Client {
     private static String host;
     private static int port;
     private static Socket soket = null;
-    BufferedReader bufferedReader = null;
-    PrintWriter printWriter = null;
-    String strMsg;
-    String login;
+    private BufferedReader bufferedReader = null;
+    private PrintWriter printWriter = null;
+    private String strMsg;
+    private String login;
 
     public Client(String host, int port, String login) {
         this.host = host;
@@ -56,11 +56,10 @@ public class Client {
         }
     }
 
-    public void sendMessage(String message) {
-        Message msg = new Message(message, login);
+    public void sendMessage(Message message) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            strMsg = mapper.writeValueAsString(msg);
+            strMsg = mapper.writeValueAsString(message);
             printWriter.println(strMsg);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
@@ -72,6 +71,7 @@ public class Client {
     public String getLogin(){
         return login;
     }
+
 
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to Client side");
