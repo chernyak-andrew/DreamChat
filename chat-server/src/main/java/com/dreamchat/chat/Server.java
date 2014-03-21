@@ -10,39 +10,72 @@ import java.net.Socket;
 /**
  * @author eugene chapsky
  */
-public class Server {
-    private  static int port = 1234;
+public class Server extends Thread {
+    private static int port = 1234;
+    private static String messageString;
+    private static ServerSocket serverSocket = null;
+    private static Socket socket = null;
+    private static PrintWriter printWriter=null;
+    private static BufferedReader buffReader=null;
 
-    public static void main(String[] args) throws IOException {
-        System.out.println("Welcome!");
-        String messageString;
-        ServerSocket serverSoket = null;
-        Socket soket = null;
+    public static void init(int port) {
+        System.out.println("***Init Server***");
         try {
-            serverSoket = new ServerSocket(port);
-            System.out.print("Waiting for a client...");
-            soket = serverSoket.accept();
-            System.out.println("Client connected");
+            serverSocket = new ServerSocket(port);
+            socket = serverSocket.accept();
+            socket.setSoTimeout(0);
+            buffReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            System.out.println("***Got a client***");
         } catch (IOException e) {
-            System.out.println("Can't accept server soket");
-            System.exit(-1);
+            e.printStackTrace();
+            stopServer();
         }
-        BufferedReader buffReader = new BufferedReader(new InputStreamReader(soket.getInputStream()));
-        PrintWriter printWriter = new PrintWriter(soket.getOutputStream(), true);
+    }
+
+    public static void startWaitingMessages(){
         ObjectMapper mapper = new ObjectMapper();
-        Message messageFromClient = null;
         try {
             while ((messageString = buffReader.readLine()) != null) {
                 if (messageString.equalsIgnoreCase("exit")) break;
-                messageFromClient = mapper.readValue(messageString, Message.class);
-                System.out.println(messageFromClient.getDateCreated()+":"+ messageFromClient.getSender() +":    "+ messageFromClient.getMessage());
                 printWriter.print(messageString);
+                Message messageFromClient = mapper.readValue(messageString, Message.class);
+                System.out.println(messageFromClient.getDateCreated()+":"+ messageFromClient.getSender() +":    "+ messageFromClient.getMessage());
             }
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
         } catch (IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    private static void stopServer(){
+      if (socket!=null){
+          try {
+              socket.close();
+          } catch (IOException ex){
+              ex.printStackTrace();
+          }
+      }
+      if (buffReader!=null){
+          try {
+              buffReader.close();
+          } catch (IOException ex){
+              ex.printStackTrace();
+          }
+      }
+      if (printWriter!=null){
+              printWriter.close();
+      }
+    }
+
+    public static void sendBroadcastMessage(String message){
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        init(port);
+        startWaitingMessages();
     }
 }
 

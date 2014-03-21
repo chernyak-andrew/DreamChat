@@ -4,25 +4,30 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
  * @author eugene chapsky
  */
-public class Client {
+public class Client extends Thread{
 
-    private StackTraceElement state; // connected, disconnected,
-    private static String host;
+    private StackTraceElement state; // connected, disconnected, TODO
     private static int port;
-    private static Socket soket = null;
+    private static Socket socket = null;
     private BufferedReader bufferedReader = null;
     private PrintWriter printWriter = null;
-    private String strMsg;
-    private String login;
+    private String login= null;
+    private InetAddress ipAddress= null;
+
 
     public Client(String host, int port, String login) {
-        this.host = host;
+        try {
+            ipAddress= InetAddress.getByName(host);
+        } catch (UnknownHostException ex){
+            ex.printStackTrace();
+        }
         this.port = port;
         this.login = login;
         connect();
@@ -33,22 +38,22 @@ public class Client {
     }
 
     public void connect() {
-       System.out.println("Connecting to... " + host);
+       System.out.println("Connecting to... " + ipAddress);
         try{
-            soket = new Socket(host, port);
-            bufferedReader = new BufferedReader(new InputStreamReader(soket.getInputStream()));
-            printWriter = new PrintWriter(soket.getOutputStream(), true);
+            socket = new Socket(ipAddress, port);
+            socket.setSoTimeout(0);
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
         } catch (UnknownHostException ex){
             ex.printStackTrace();
         }catch (IOException ex){
             ex.printStackTrace();
         }
-
     }
 
     public void disconnect() {
         try {
-            soket.close();
+            socket.close();
             bufferedReader.close();
             printWriter.close();
         } catch (IOException ex){
@@ -59,7 +64,7 @@ public class Client {
     public void sendMessage(Message message) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            strMsg = mapper.writeValueAsString(message);
+            String strMsg = mapper.writeValueAsString(message);
             printWriter.println(strMsg);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
@@ -72,30 +77,4 @@ public class Client {
         return login;
     }
 
-
-    public static void main(String[] args) throws IOException {
-        System.out.println("Welcome to Client side");
-
-        Socket fromserver = null;
-        String host="localhost";
-        System.out.println("Connecting to... " + host);
-
-        fromserver = new Socket(host, 1234);
-        BufferedReader in = new BufferedReader(new InputStreamReader(fromserver.getInputStream()));
-        PrintWriter out = new PrintWriter(fromserver.getOutputStream(), true);
-        BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
-        String fuser, fserver;
-        while((fuser = inu.readLine()) != null) {
-            out.println(fuser);
-            fserver = in.readLine();
-            System.out.println(fserver);
-            if (fuser.equalsIgnoreCase("close")) break;
-            if (fuser.equalsIgnoreCase("exit")) break;
-        }
-
-        out.close();
-        in.close();
-        inu.close();
-        fromserver.close();
-    }
 }

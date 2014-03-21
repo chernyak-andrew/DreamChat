@@ -1,5 +1,6 @@
 package com.dreamchat.chat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -14,7 +15,7 @@ import java.util.GregorianCalendar;
 public class Message {
     private String message;
     private String sender;
-    private Date dateCreated = new Date();
+    private SimpleDateFormat dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Message(String message, String sender) {
         this.message = message;
@@ -41,8 +42,8 @@ public class Message {
         this.sender = sender;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public String getDateCreated() {
+        return dateCreated.format(new Date());
     }
 
 

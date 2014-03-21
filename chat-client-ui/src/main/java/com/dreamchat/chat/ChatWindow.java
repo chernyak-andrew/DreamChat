@@ -1,6 +1,8 @@
 package com.dreamchat.chat;
 
 import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.*;
 
@@ -52,18 +54,16 @@ public class ChatWindow extends JFrame
         sendMessageButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Message message = new Message(nameInputField.getText(), client.getLogin());
-                client.sendMessage(message);
+                Message outMessage = new Message(nameInputField.getText(), client.getLogin());
+                client.sendMessage(outMessage);
                 nameInputField.setText("");
-                chatOutput.append(message.getDateCreated()+":"+ message.getSender() +":    "+ message.getMessage());
-
+                chatOutput.append(outMessage.getDateCreated()+"   "+ outMessage.getSender() +":    "+ outMessage.getMessage()+"\n");
             }
         });
     }
 
 //    public static void main( String[] args )
 //    {
-//        ChatWindow window = new ChatWindow(new Client());
-//        window.setVisible(true);
+//        Date dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").get2DigitYearStart();
 //    }
 }
