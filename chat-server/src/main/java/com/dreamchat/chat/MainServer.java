@@ -20,13 +20,11 @@ public class MainServer {
         public static void init(int port) {
             System.out.println("***Init MainServer***");
             try {
-                System.out.println("try to open ServerSocket in port "+port);
                 serverSocket = new ServerSocket(port);
                 System.out.println("ServerSocket opened  in port "+port);
                 threadForPrintMessage();
                 while (true) {
                     socket = serverSocket.accept();
-
                     socket.setSoTimeout(0);
                     new ServerPerClient(socket).start();
                     countOfClient++;

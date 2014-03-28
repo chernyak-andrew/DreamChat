@@ -21,12 +21,10 @@ public class ServerPerClient extends Thread {
 
     public void run () {
         try {
-            System.out.println("started new ServerPerClient");
             buffReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             ObjectMapper mapper = new ObjectMapper();
             try {
-                System.out.println("ServerPerClient while");
                 while (true) {
                     String messageString = buffReader.readLine();
                     if (messageString.equalsIgnoreCase("exit")) break;

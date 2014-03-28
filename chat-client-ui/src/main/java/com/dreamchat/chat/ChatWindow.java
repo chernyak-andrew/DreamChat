@@ -19,7 +19,6 @@ public class ChatWindow extends JFrame
     private final JLabel messageTextLabel = new JLabel("Enter Message:");
     private final JLabel chatLabel = new JLabel("Chat:");
     private final JButton sendMessageButton = new JButton("Send");
-    public String login;
 
     public ChatWindow(Client client) {
         super();
@@ -59,6 +58,15 @@ public class ChatWindow extends JFrame
                 chatOutput.append(outMessage.getDateCreated()+"   "+ outMessage.getSender() +":    "+ outMessage.getMessage()+"\n");
             }
         });
+    }
+
+    private void printMessages(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
     }
 
 }
