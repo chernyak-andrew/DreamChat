@@ -31,8 +31,8 @@ public class ServerPerClient extends Thread {
                     String typeOfMessage = getTypeOfMessage(messageString);
                     Type enumOfType = Type.getType(typeOfMessage);
                     switch (enumOfType){
-                        case GET_MSG: returnMessages(messageString);
-                        case SENDED_MSG: addMessageToCollection(messageString);
+                        case GET_MSG: returnMessages(messageString); break;
+                        case SENDED_MSG: addMessageToCollection(messageString); break;
                     }
                 }
             } catch (IOException ex){
@@ -70,7 +70,7 @@ public class ServerPerClient extends Thread {
             SendedMessage msg = MainServer.listOfMessages.get(i);
             listOfSendedMessage.add(msg);
         }
-        ReturnedMessages messagesForReturn = new ReturnedMessages(curentSize, listOfSendedMessage);
+        ReturnedMessages messagesForReturn = new ReturnedMessages(curentSize-1, listOfSendedMessage);
         String strMsg = null;
         try {
             strMsg = mapper.writeValueAsString(messagesForReturn);

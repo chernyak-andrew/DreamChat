@@ -5,10 +5,15 @@ package com.dreamchat.chat;
  */
 public class GetMessages extends AbstractMessage {
     private int lastRecievedMessageId;
+//    private String type = "GET_MSG";
+
 
     public GetMessages(int lastRecievedMessageId) {
         this.lastRecievedMessageId = lastRecievedMessageId;
-        super.type="GET_MSG";
+        super.type = "GET_MSG";
+    }
+    public GetMessages(){
+        this(0);
     }
 
     public int getLastRecievedMessageId() {

@@ -18,6 +18,8 @@ public class MainServer {
     public static List<SendedMessage> listOfMessages = Collections.synchronizedList(new ArrayList());
 
         public static void init(int port) {
+            listOfMessages.add(new SendedMessage("first", "admin"));
+            listOfMessages.add(new SendedMessage("second", "admin"));
             System.out.println("***Init MainServer***");
             try {
                 serverSocket = new ServerSocket(port);
