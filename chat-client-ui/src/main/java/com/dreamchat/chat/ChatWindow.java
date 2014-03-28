@@ -1,8 +1,7 @@
 package com.dreamchat.chat;
 
 import java.awt.event.ActionEvent;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -19,6 +18,7 @@ public class ChatWindow extends JFrame
     private final JLabel messageTextLabel = new JLabel("Enter Message:");
     private final JLabel chatLabel = new JLabel("Chat:");
     private final JButton sendMessageButton = new JButton("Send");
+    private int indexOfLastPrintedMessage=0;
 
     public ChatWindow(Client client) {
         super();
@@ -27,6 +27,8 @@ public class ChatWindow extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initControls();
         this.client = client;
+        sendRequestForMessages();
+        getMessagesFromServerAndPrint();
     }
 
     private void initControls() {
@@ -52,21 +54,45 @@ public class ChatWindow extends JFrame
         sendMessageButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Message outMessage = new Message(nameInputField.getText(), client.getLogin());
-                client.sendMessage(outMessage);
+                SendedMessage sendedMessage = new SendedMessage(nameInputField.getText(), client.getLogin());
+                client.sendMessage(sendedMessage);
                 nameInputField.setText("");
-                chatOutput.append(outMessage.getDateCreated()+"   "+ outMessage.getSender() +":    "+ outMessage.getMessage()+"\n");
+                chatOutput.append(sendedMessage.getDateCreated()+"   "+ sendedMessage.getUserName() +":    "+ sendedMessage.getText()+"\n");
             }
         });
     }
 
-    private void printMessages(){
+    private void sendRequestForMessages(){
         new Thread(new Runnable() {
             @Override
             public void run() {
+                GetMessages request = new GetMessages(indexOfLastPrintedMessage);
+                client.sendMessage(request);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
         }).start();
+    }
+
+    private void getMessagesFromServerAndPrint(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ReturnedMessages returnedMessages = client.getReturnedMessages();
+                List<SendedMessage> listOfMessage = returnedMessages.getMessages();
+                printMessages(listOfMessage);
+            }
+        }).start();
+    }
+
+    private void printMessages(List<SendedMessage> listOfMessages){
+        for (SendedMessage sm: listOfMessages){
+            chatOutput.append(sm.getDateCreated()+"   "+ sm.getUserName() +":    "+ sm.getText()+"\n");
+        }
     }
 
 }

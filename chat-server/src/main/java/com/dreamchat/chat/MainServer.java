@@ -15,7 +15,7 @@ public class MainServer {
     private static ServerSocket serverSocket = null;
     private static Socket socket = null;
     private static int countOfClient=0;
-    public static List<Message> listOfMessages = Collections.synchronizedList(new ArrayList());
+    public static List<SendedMessage> listOfMessages = Collections.synchronizedList(new ArrayList());
 
         public static void init(int port) {
             System.out.println("***Init MainServer***");
@@ -53,8 +53,8 @@ public class MainServer {
                     }
                     if (listOfMessages.size()>size){
                         for (int i = size; i<listOfMessages.size(); i++){
-                            Message msg=listOfMessages.get(i);
-                            System.out.println(msg.getDateCreated()+":"+ msg.getSender() +":    "+ msg.getMessage());
+                            SendedMessage msg=listOfMessages.get(i);
+                            System.out.println(msg.getDateCreated()+":"+ msg.getUserName() +":    "+ msg.getText());
                         }
                         size=listOfMessages.size();
                     }

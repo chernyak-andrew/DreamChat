@@ -1,10 +1,11 @@
 package com.dreamchat.chat;
 
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author eugene chapsky
@@ -23,16 +24,17 @@ public class ServerPerClient extends Thread {
         try {
             buffReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream(), true);
-            ObjectMapper mapper = new ObjectMapper();
             try {
                 while (true) {
                     String messageString = buffReader.readLine();
                     if (messageString.equalsIgnoreCase("exit")) break;
-                    Message messageFromClient = mapper.readValue(messageString, Message.class);
-                    MainServer.listOfMessages.add(messageFromClient);
+                    String typeOfMessage = getTypeOfMessage(messageString);
+                    Type enumOfType = Type.getType(typeOfMessage);
+                    switch (enumOfType){
+                        case GET_MSG: returnMessages(messageString);
+                        case SENDED_MSG: addMessageToCollection(messageString);
+                    }
                 }
-            } catch (JsonProcessingException ex) {
-                ex.printStackTrace();
             } catch (IOException ex){
                 System.out.println("User leave");
             }
@@ -41,6 +43,46 @@ public class ServerPerClient extends Thread {
         } finally {
             stopServer();
         }
+    }
+
+    private void addMessageToCollection(String messageString) {
+        ObjectMapper mapper = new ObjectMapper();
+        SendedMessage messageFromClient = null;
+        try {
+            messageFromClient = mapper.readValue(messageString, SendedMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MainServer.listOfMessages.add(messageFromClient);
+    }
+
+    private void returnMessages(String messageString) {
+        ObjectMapper mapper = new ObjectMapper();
+        GetMessages getMsg = null;
+        try {
+            getMsg = mapper.readValue(messageString, GetMessages.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<SendedMessage> listOfSendedMessage = new ArrayList<SendedMessage>();
+        int curentSize = MainServer.listOfMessages.size();
+        for (int i=getMsg.getLastRecievedMessageId(); i<curentSize; i++){
+            SendedMessage msg = MainServer.listOfMessages.get(i);
+            listOfSendedMessage.add(msg);
+        }
+        ReturnedMessages messagesForReturn = new ReturnedMessages(curentSize, listOfSendedMessage);
+        String strMsg = null;
+        try {
+            strMsg = mapper.writeValueAsString(messagesForReturn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        printWriter.println(strMsg);
+
+    }
+
+    private String getTypeOfMessage(String messageString) {
+        return "GET_MSG";
     }
 
     private void stopServer(){

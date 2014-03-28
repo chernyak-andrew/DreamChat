@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * @author eugene chapsky
@@ -61,7 +62,7 @@ public class Client{
         }
     }
 
-    public void sendMessage(Message message) {
+    public void sendMessage(AbstractMessage message) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String strMsg = mapper.writeValueAsString(message);
@@ -80,4 +81,20 @@ public class Client{
         return login;
     }
 
+    public ReturnedMessages getReturnedMessages() {
+        ObjectMapper mapper = new ObjectMapper();
+        String stringMessage="";
+        ReturnedMessages returnedMessages=null;
+        try {
+            stringMessage = bufferedReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            returnedMessages = mapper.readValue(stringMessage, ReturnedMessages.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnedMessages;
+    }
 }
