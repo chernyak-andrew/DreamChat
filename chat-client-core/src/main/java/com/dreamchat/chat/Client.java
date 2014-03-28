@@ -11,11 +11,11 @@ import java.net.UnknownHostException;
 /**
  * @author eugene chapsky
  */
-public class Client extends Thread{
+public class Client{
 
     private StackTraceElement state; // connected, disconnected, TODO
-    private static int port;
-    private static Socket socket = null;
+    private int port;
+    private Socket socket = null;
     private BufferedReader bufferedReader = null;
     private PrintWriter printWriter = null;
     private String login= null;
@@ -66,6 +66,9 @@ public class Client extends Thread{
         try {
             String strMsg = mapper.writeValueAsString(message);
             printWriter.println(strMsg);
+//            String s = bufferedReader.readLine();
+//            Message messageFromServer = mapper.readValue(s, Message.class);
+//            System.out.println(messageFromServer.getDateCreated()+":"+ messageFromServer.getSender() +":    "+ messageFromServer.getMessage());
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
         } catch (IOException ex){

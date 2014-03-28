@@ -49,7 +49,6 @@ public class ChatWindow extends JFrame
         panel.add(chatLabel, "cell 0 1, align right");
         panel.add(chatOutput, "cell 1 1, align left");
 
-
         panel.add(sendMessageButton);
         sendMessageButton.addActionListener(new AbstractAction() {
             @Override
@@ -62,8 +61,4 @@ public class ChatWindow extends JFrame
         });
     }
 
-//    public static void main( String[] args )
-//    {
-//        Date dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").get2DigitYearStart();
-//    }
 }
